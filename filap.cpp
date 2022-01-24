@@ -80,10 +80,10 @@ void print_queue(NODE* root){
     int it = 0; //apenas para indicar posição do elemento na fila
     int time;
 
-    time = clock();
+    time = clock();   
     temp_print = root;
 
-    while((clock()-time) <10000){ //faz impressão permanecer por 10s
+    while((clock()-time) <5000){ //faz impressão permanecer por 10s
         while(temp_print!=NULL){
             printf("\nelemento %d: %d",it,temp_print->elem);
             temp_print = temp_print->next;
@@ -104,7 +104,7 @@ NODE* remove(NODE* root, int elem_temp){
                 root = NULL;
                 break;
             }
-            if(remove == root){ //primeiro elemento
+            if(remove == root){ //primeiro elemento (algumas filas implementam só a remoção do primeiro, maior, elemento)
                 root = root->next;
                 remove->next = NULL;
                 break;
@@ -140,7 +140,8 @@ int main(){
         printf("\n-1 quit");
         printf("\n 0 push ");
         printf("\n 1 pop ");
-        printf("\n 2 return all\n");
+        printf("\n 2 return all");
+        printf("\n 3 update key\n");
         scanf("%d",&opt);
 
         switch(opt){
@@ -173,11 +174,29 @@ int main(){
                 int elem_temp = 0;
                 printf("elemento: ");
                 scanf("%d",&elem_temp);
-                remove(root,elem_temp);
+                root = remove(root,elem_temp);
                 break;
             }
             case 2:
+            {
                 print_queue(root);
+                break;
+            }
+            case 3:
+            {
+                int key = 0;
+                printf("\nChave a ser atualizada: ");
+                scanf("%d",&key);
+
+                root = remove(root,key);
+                key = 0;
+
+                printf("\nNovo valor: ");
+                scanf("%d",&key);
+                printf("%d",key);
+                root = insert(root,key);
+                break;
+            }
         }
     }
     free(root);
