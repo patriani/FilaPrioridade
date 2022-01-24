@@ -13,6 +13,7 @@ Máxima".
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<time.h>
 
 struct NODE{
     int elem;
@@ -69,15 +70,71 @@ NODE* insert(NODE* root,int elem_temp){
             
         }
     }
+    free(temp_addr1);
+    free(temp_addr2);
     return(root);
 }
+void print_queue(NODE* root){
+    NODE* temp_print = new NODE;
+    char user;
+    int it = 0; //apenas para indicar posição do elemento na fila
+    int time;
 
+    time = clock();
+    temp_print = root;
+
+    while((clock()-time) <10000){ //faz impressão permanecer por 10s
+        while(temp_print!=NULL){
+            printf("\nelemento %d: %d",it,temp_print->elem);
+            temp_print = temp_print->next;
+            it++;
+        }
+    }
+    free(temp_print);
+}
+NODE* remove(NODE* root, int elem_temp){
+    NODE* temp_addr1 = new NODE; //sempre uma posição atras de "remove"
+    NODE* remove = new NODE; //ficará sobre o nó a ser removido quando encontrado
+    remove = root;
+    temp_addr1 = NULL;
+
+    while(remove != NULL){
+        if(remove->elem == elem_temp){
+            if(root->next == NULL){ //unico elemento
+                root = NULL;
+                break;
+            }
+            if(remove == root){ //primeiro elemento
+                root = root->next;
+                remove->next = NULL;
+                break;
+            }
+            if(remove->next == NULL){ //ultimo elemento
+                temp_addr1->next = NULL;
+                break;        
+            }
+            else{ //meio da fila
+                temp_addr1->next = remove->next;
+                remove->next = NULL;
+                break;
+            }
+        }else{ // movimentação de ponteiro
+        temp_addr1 = remove;
+        remove = remove->next;
+        }
+    }
+    free(remove);
+    free(temp_addr1);
+
+    return(root);
+}
 int main(){
     NODE* root = new NODE;
     int opt = -1;
     root = NULL;
     
     while(true){
+
         system("cls");
 
         printf("\n-1 quit");
@@ -111,26 +168,18 @@ int main(){
                 }
                 break;
             }
+            case 1:
+            {
+                int elem_temp = 0;
+                printf("elemento: ");
+                scanf("%d",&elem_temp);
+                remove(root,elem_temp);
+                break;
+            }
             case 2:
-                NODE* temp_print = new NODE;
-                int it = 0;
-                int fake_ch;
-                temp_print = root;
-
-                while(temp_print!=NULL){
-                    printf("\nelemento %d: %d",it,temp_print->elem);
-                    temp_print = temp_print->next;
-                    it++;
-                }
-                printf("\ncontinue? [y/n]\n");
-                scanf("%d",fake_ch);
-                if(fake_ch == 121)
-                    break;
-                else    
-                    printf("\nCtrl+C para sair\n");
-            
+                print_queue(root);
         }
     }
-    
+    free(root);
     return 0;
 }
